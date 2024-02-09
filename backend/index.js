@@ -18,7 +18,7 @@ app.use(cors({
     methods: ['POST', 'GET'],
     credentials: true
 }));
-
+app.use('/uploads', express.static('uploads')) //Important for using multer to fetch data by frontend to backend
 
 try {
     mongoose.connect(url);
@@ -47,6 +47,22 @@ app.post('/uploads', uploadmiddleware, async (req, res) => {
         res.status(200).json(data)
     } catch (e) {
         res.status(500).json(e);
+    }
+})
+
+app.get('/images',async(req,res)=>{
+    console.log("first")
+    try{
+        const data=await ImagesModel.find({});
+        console.log(data)
+        if(data){
+            res.status(200).json(data)
+        }
+        else{
+            res.status(400).json("No image in database")
+        }
+    }catch(e){
+        res.status(500).json(e)
     }
 })
 app.listen(port, () => {
